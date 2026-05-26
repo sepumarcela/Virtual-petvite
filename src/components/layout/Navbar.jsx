@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 
-const TEAL      = '#3D8A8C'
+const TEAL      = '#F5F5F5'
 const DARK_TEAL = '#1E5F61'
 const ORANGE    = '#D4883B'
 
@@ -52,13 +52,19 @@ export default function Navbar() {
       <nav style={{
         background: TEAL,
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        padding: '0.85rem 2rem',
+        padding: '0.5rem 2rem',
         boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
       }}>
-        <Link to="/" style={{ textDecoration: 'none' }}>
-          <h2 style={{ margin: 0, color: '#fff', fontWeight: 800, fontSize: '1.2rem' }}>
-            VirtualPet 🐾
-          </h2>
+        {/* Logo imagen */}
+        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+          <img
+            src="/logo.png"
+            alt="VirtualPet"
+            style={{
+              height: 52,
+              objectFit: 'contain',
+            }}
+          />
         </Link>
 
         <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
