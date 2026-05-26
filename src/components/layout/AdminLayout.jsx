@@ -34,10 +34,10 @@ export default function AdminLayout({ children }) {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   })
 
-  const handleLogout = () => {
-    adminLogout()
-    navigate('/admin/login')
-  }
+ const handleLogout = () => {
+  adminLogout()
+  navigate('/login')
+}
 
   return (
     <div className={`adm-root adm-layout ${collapsed ? 'collapsed' : ''}`}>
