@@ -1,6 +1,4 @@
-// src/layouts/AdminLayout.jsx
-// Layout principal del panel admin.
-// Importa admin.css para sus estilos propios (no afecta la tienda cliente).
+
 
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -42,9 +40,9 @@ export default function AdminLayout({ children }) {
   return (
     <div className={`adm-root adm-layout ${collapsed ? 'collapsed' : ''}`}>
 
-      {/* ── SIDEBAR ── */}
+      
       <aside className={`adm-sidebar ${collapsed ? 'collapsed' : ''}`}>
-        {/* Brand */}
+        
         <div className="adm-brand">
           <img src="/logo.png" alt="VirtualPet" className="adm-brand-logo" />
           {!collapsed && (
@@ -58,7 +56,7 @@ export default function AdminLayout({ children }) {
           </button>
         </div>
 
-        {/* Nav */}
+       
         <nav className="adm-nav">
           {NAV.map((item) => {
             const active = location.pathname === item.path
@@ -76,7 +74,7 @@ export default function AdminLayout({ children }) {
           })}
         </nav>
 
-        {/* Footer */}
+        
         <div className="adm-sidebar-footer">
           <div className="adm-user-row">
             <div className="adm-avatar">
@@ -96,9 +94,9 @@ export default function AdminLayout({ children }) {
         </div>
       </aside>
 
-      {/* ── MAIN ── */}
+      
       <div className="adm-main-wrapper">
-        {/* Topbar */}
+        
         <header className="adm-topbar">
           <div>
             <div className="adm-page-title">{title}</div>
@@ -114,7 +112,7 @@ export default function AdminLayout({ children }) {
           </div>
         </header>
 
-        {/* Contenido */}
+      
         <main className="adm-content" style={{ animation: 'admFadeIn .25s ease' }}>
           {children}
         </main>

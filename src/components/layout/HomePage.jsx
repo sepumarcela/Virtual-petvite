@@ -83,13 +83,13 @@ export default function HomePage() {
       <section className="home-section" style={{ maxWidth: 800, margin: '0 auto', padding: '2.5rem 1rem' }}>
         <h2 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '1.6rem', fontWeight: 700 }}>Categorías</h2>
 
-        {/* Fila 1: 3 tarjetas */}
+        
         <CardRow items={row1} />
 
-        {/* Fila 2: 2 tarjetas centradas */}
+        
         <CardRow items={row2} />
 
-        {/* Fila 3: 2 tarjetas centradas */}
+        
         <CardRow items={row3} />
       </section>
     </div>

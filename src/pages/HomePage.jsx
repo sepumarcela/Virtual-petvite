@@ -21,20 +21,19 @@ const CATEGORIES = [
 const BENEFITS = [
   { icon: '🚚', title: 'Entrega mismo día',       desc: 'Bogotá y principales ciudades' },
   { icon: '🛡️', title: 'Compra segura',           desc: 'Pago contra entrega disponible' },
-  { icon: '✂️', title: 'Peluquería profesional',  desc: 'Equipos Metro, Aeolux y más' },
   { icon: '🎧', title: 'Soporte experto',          desc: 'Asesoría veterinaria en línea' },
 ]
 
 const FOOTER_CATS = [
   'Alimento concentrado','Snacks y premios','Comederos y bebederos',
-  'Aseo y cuidado','Transporte','Juguetes','Peluquería',
+  'Aseo y cuidado','Transporte','Juguetes'
 ]
 
 export default function HomePage() {
   return (
     <div style={{ fontFamily: "'Segoe UI', sans-serif", color: '#1a1a1a', background: '#fff' }}>
 
-      {/* ─── HERO ───────────────────────────────────────── */}
+
       <section style={{
         background: `linear-gradient(135deg, ${DARK_TEAL} 0%, ${TEAL} 60%, #52A0A2 100%)`,
         padding: '3rem 2rem',
@@ -58,7 +57,7 @@ export default function HomePage() {
               Todo lo que tu mascota<br />necesita, en un solo lugar
             </h1>
             <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', margin: '0 0 1.75rem', lineHeight: 1.6 }}>
-              Alimentos premium · Snacks · Accesorios · Peluquería profesional
+              Alimentos premium · Snacks · Accesorios 
             </p>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <Link to="/products">
@@ -226,11 +225,11 @@ export default function HomePage() {
           <div>
             <h4 style={{ color: ORANGE, margin: '0 0 0.75rem', fontWeight: 700 }}>Contáctanos</h4>
             <p style={{ fontSize: '0.83rem', lineHeight: 1.9, margin: 0, opacity: 0.85 }}>
-              📞 +57 300 910 8496<br />
-              📧 info@virtualpet.co<br />
-              📍 Bogotá, Colombia<br />
-              🕐 Lun – Sáb: 8am – 7pm<br />
-              🕐 Dom: 9am – 5pm
+              📞 +57 3103852168<br />
+              📧 virtual.pet@hotmail.com<br />
+              📍 Medellín, Colombia<br />
+              🕐 Lun – Sáb: 7am – 8pm<br />
+              🕐 Dom: 9am – 1pm
             </p>
           </div>
         </div>

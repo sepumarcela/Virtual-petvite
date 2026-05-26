@@ -1,4 +1,4 @@
-// components/layout/Navbar.jsx
+
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
@@ -26,7 +26,7 @@ export default function Navbar() {
 
   return (
     <header>
-      {/* ── Barra superior ── */}
+     
       <div style={{
         background: DARK_TEAL, color: '#fff',
         fontSize: '0.78rem', padding: '0.45rem 2rem',
@@ -34,7 +34,7 @@ export default function Navbar() {
         flexWrap: 'wrap', gap: '0.5rem',
       }}>
         <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <span>📞 +57 300 910 8496</span>
+          <span>📞 310 385 2168</span>
           <span>🛡️ Compras seguras online</span>
           <span>💳 Pago contra entrega</span>
           <span>🚚 Entregas el mismo día</span>
@@ -48,7 +48,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ── Barra principal ── */}
+  
       <nav style={{
         background: TEAL,
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -69,13 +69,13 @@ export default function Navbar() {
 
         <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
 
-          {/* 🏠 Inicio */}
+          
           <NavBtn to="/" label="🏠" title="Inicio" />
 
-          {/* 🛍️ Productos */}
+          
           <NavBtn to="/products" label="🛍️" title="Productos" />
 
-          {/* 🛒 Carrito con badge */}
+          
           <Link to="/cart" title="Carrito" style={{ textDecoration: 'none' }}>
             <div style={{
               ...btnBase,
@@ -95,7 +95,7 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* 🔐 Admin — solo visible si no autenticado o es admin */}
+          
           {(!isAuthenticated || user?.role === 'admin') && (
             <Link
               to={isAuthenticated && user?.role === 'admin' ? '/dashboard' : '/login'}

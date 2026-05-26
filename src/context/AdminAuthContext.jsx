@@ -1,6 +1,4 @@
-// src/context/AdminAuthContext.jsx
-// Context separado del AuthContext de clientes.
-// Maneja la sesión JWT del panel administrativo.
+
 
 import { createContext, useContext, useState, useEffect } from 'react'
 

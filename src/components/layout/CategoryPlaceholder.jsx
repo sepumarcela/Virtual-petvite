@@ -1,5 +1,4 @@
-// components/CategoryPlaceholder.jsx
-// Placeholder visual por categoría para productos sin imagen
+
 
 const PLACEHOLDERS = {
   snacks:      { emoji: '🦴', bg: 'linear-gradient(135deg, #FFF3E0, #FFE0B2)', label: 'Snack' },
