@@ -275,7 +275,9 @@ function ProductCard({ product, onVerFicha, onAddToCart }) {
               color: "#1E5F61",
             }}
           >
-            ${Number(product.price).toLocaleString("es-CO")}
+            {product.price && !isNaN(Number(product.price))
+              ? `$${Number(product.price).toLocaleString("es-CO")}`
+              : "Consultar"}{" "}
           </span>
         </div>
 
@@ -345,18 +347,6 @@ export default function ProductsPage() {
     if (value) setSearchParams({ cat: value });
     else setSearchParams({});
   };
-
-  const filtered = PRODUCTOS_DATA.filter((p) => {
-    const matchSearch =
-      !search ||
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.brand.toLowerCase().includes(search.toLowerCase()) ||
-      p.description.toLowerCase().includes(search.toLowerCase());
-
-    const matchCat = !selectedCat || p.categoryId === selectedCat;
-
-    return matchSearch && matchCat;
-  });
 
   const handleAddToCart = (product) => {
     addItem({
@@ -433,23 +423,38 @@ export default function ProductsPage() {
       </div>
 
       {/* GRID */}
-      <div
-        key={selectedCat}
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-          gap: "2rem",
-        }}
-      >
-        {filtered.map((product) => (
-          <ProductCard
-            key={`${product.id}-${product.name}-${product.categoryId}`}
-            product={product}
-            onVerFicha={setFichaOpen}
-            onAddToCart={handleAddToCart}
-          />
-        ))}
-      </div>
+      {
+  PRODUCTOS_DATA
+    .filter((product) => {
+      const text = search.toLowerCase();
+
+      const matchesSearch =
+        !search ||
+        product.name
+          ?.toLowerCase()
+          .includes(text) ||
+        product.brand
+          ?.toLowerCase()
+          .includes(text) ||
+        product.description
+          ?.toLowerCase()
+          .includes(text);
+
+      const matchesCategory =
+        !selectedCat ||
+        product.categoryId === selectedCat;
+
+      return matchesSearch && matchesCategory;
+    })
+    .map((product) => (
+      <ProductCard
+        key={`${product.id}-${product.name}-${product.categoryId}`}
+        product={product}
+        onVerFicha={setFichaOpen}
+        onAddToCart={handleAddToCart}
+      />
+    ))
+}
 
       {fichaOpen && (
         <FichaTecnicaModal
