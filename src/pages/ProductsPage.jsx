@@ -1,134 +1,319 @@
 // pages/ProductsPage.jsx
-import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
-import { PRODUCTOS_DATA } from '../data/productosData'
-import Swal from 'sweetalert2'
+
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { PRODUCTOS_DATA } from "../data/productosData";
+import Swal from "sweetalert2";
+import FichaTecnicaModal from "../components/ui/FichaTecnicaModal";
 
 const CAT_PLACEHOLDER = {
-  alimentos:  { emoji: '🍖', bg: 'linear-gradient(135deg, #FFF3E0, #FFE0B2)' },
-  snacks:     { emoji: '🦴', bg: 'linear-gradient(135deg, #FFF8E1, #FFECB3)' },
-  juguetes:   { emoji: '🧸', bg: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)' },
-  aseo:       { emoji: '🛁', bg: 'linear-gradient(135deg, #E3F2FD, #BBDEFB)' },
-  collares:   { emoji: '🐕', bg: 'linear-gradient(135deg, #F3E5F5, #E1BEE7)' },
-  comederos:  { emoji: '🥣', bg: 'linear-gradient(135deg, #E0F7FA, #B2EBF2)' },
-  transporte: { emoji: '🧳', bg: 'linear-gradient(135deg, #FBE9E7, #FFCCBC)' },
-  default:    { emoji: '🐾', bg: 'linear-gradient(135deg, #F0F4F0, #E0E8E0)' },
-}
+  alimentos: { emoji: "🍖", bg: "linear-gradient(135deg, #FFF3E0, #FFE0B2)" },
+  snacks: { emoji: "🦴", bg: "linear-gradient(135deg, #FFF8E1, #FFECB3)" },
+  juguetes: { emoji: "🧸", bg: "linear-gradient(135deg, #E8F5E9, #C8E6C9)" },
+  aseo: { emoji: "🛁", bg: "linear-gradient(135deg, #E3F2FD, #BBDEFB)" },
+  collares: { emoji: "🐕", bg: "linear-gradient(135deg, #F3E5F5, #E1BEE7)" },
+  comederos: { emoji: "🥣", bg: "linear-gradient(135deg, #E0F7FA, #B2EBF2)" },
+  transporte: { emoji: "🧳", bg: "linear-gradient(135deg, #FBE9E7, #FFCCBC)" },
+  default: { emoji: "🐾", bg: "linear-gradient(135deg, #F0F4F0, #E0E8E0)" },
+};
 
 const CATEGORIES = [
-  { id: 'alimentos',  name: 'Alimentos' },
-  { id: 'snacks',     name: 'Snacks' },
-  { id: 'juguetes',   name: 'Juguetes' },
-  { id: 'aseo',       name: 'Aseo y Cuidado' },
-  { id: 'collares',   name: 'Collares y Traillas' },
-  { id: 'comederos',  name: 'Comederos y Bebederos' },
-  { id: 'transporte', name: 'Transporte' },
-]
+  { id: "alimentos", name: "Alimentos" },
+  { id: "snacks", name: "Snacks" },
+  { id: "juguetes", name: "Juguetes" },
+  { id: "aseo", name: "Aseo y Cuidado" },
+  { id: "collares", name: "Collares y Traillas" },
+  { id: "comederos", name: "Comederos y Bebederos" },
+  { id: "transporte", name: "Transporte" },
+];
 
-// Ingredientes por palabras clave en la descripción
 const INGREDIENT_ICONS = [
-  { keys: ['pollo', 'chicken'],    emoji: '🐔', label: 'Pollo' },
-  { keys: ['pescado', 'fish', 'salmón', 'salmon', 'trucha'], emoji: '🐟', label: 'Pescado' },
-  { keys: ['arroz', 'rice'],       emoji: '🌾', label: 'Arroz' },
-  { keys: ['huevo', 'egg'],        emoji: '🥚', label: 'Huevo' },
-  { keys: ['cordero', 'lamb'],     emoji: '🐑', label: 'Cordero' },
-  { keys: ['pavo', 'turkey'],      emoji: '🦃', label: 'Pavo' },
-  { keys: ['res', 'carne', 'beef', 'bisonte', 'venado'], emoji: '🥩', label: 'Carne' },
-  { keys: ['avena', 'oat'],        emoji: '🌿', label: 'Avena' },
-  { keys: ['zanahoria', 'carrot'], emoji: '🥕', label: 'Zanahoria' },
-  { keys: ['patata', 'papa', 'potato'], emoji: '🥔', label: 'Patata' },
-  { keys: ['vitamina', 'vitamin', 'omega'], emoji: '💊', label: 'Vitaminas' },
-]
+  { keys: ["pollo", "chicken"], emoji: "🐔", label: "Pollo" },
+  {
+    keys: ["pescado", "fish", "salmón", "salmon", "trucha"],
+    emoji: "🐟",
+    label: "Pescado",
+  },
+  { keys: ["arroz", "rice"], emoji: "🌾", label: "Arroz" },
+  { keys: ["huevo", "egg"], emoji: "🥚", label: "Huevo" },
+  { keys: ["cordero", "lamb"], emoji: "🐑", label: "Cordero" },
+  { keys: ["pavo", "turkey"], emoji: "🦃", label: "Pavo" },
+  { keys: ["res", "carne", "beef"], emoji: "🥩", label: "Carne" },
+  { keys: ["avena", "oat"], emoji: "🌿", label: "Avena" },
+];
 
 function getIngredients(description) {
-  if (!description) return []
-  const desc = description.toLowerCase()
-  return INGREDIENT_ICONS.filter(ing =>
-    ing.keys.some(k => desc.includes(k))
-  ).slice(0, 7)
+  if (!description) return [];
+
+  const desc = description.toLowerCase();
+
+  return INGREDIENT_ICONS.filter((ing) =>
+    ing.keys.some((k) => desc.includes(k)),
+  ).slice(0, 6);
 }
+function ProductImg({ product, height = 220 }) {
+  const ph = CAT_PLACEHOLDER[product.categoryId] || CAT_PLACEHOLDER.default;
 
-// Imagen del producto
-function ProductImg({ product, height = 160, borderRadius = 0 }) {
-  const ph = CAT_PLACEHOLDER[product.categoryId] || CAT_PLACEHOLDER.default
-  const [imgError, setImgError] = useState(false)
-  const imgSrc = `/productos/${product.id}.jpg`
+  const imgSrc = `/productos/${product.id}.jpg`;
 
-  if (!imgError) {
-    return (
-      <div style={{ height, overflow: 'hidden', background: ph.bg, borderRadius, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <img
-          src={imgSrc}
-          alt={product.name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius }}
-          onError={() => setImgError(true)}
+  return (
+    <div
+      style={{
+        height,
+        overflow: "hidden",
+        background: ph.bg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+      }}
+    >
+      <img
+        src={imgSrc}
+        alt={product.name}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+        onError={(e) => {
+          e.target.style.display = "none";
+        }}
+      />
+
+      <img
+        src="/logo.png"
+        alt="VirtualPet"
+        style={{
+          width: 90,
+          opacity: 0.15,
+          position: "absolute",
+        }}
+      />
+    </div>
+  );
+}
+function ProductCard({ product, onVerFicha, onAddToCart }) {
+  const ingredients = getIngredients(product.description);
+
+  return (
+    <div
+      className="product-card"
+      style={{
+        background: "#fff",
+        borderRadius: "24px",
+        overflow: "hidden",
+        boxShadow: "0 8px 28px rgba(0,0,0,0.06)",
+        border: "1px solid rgba(0,0,0,0.04)",
+        display: "flex",
+        flexDirection: "column",
+        transition: "transform .22s ease, box-shadow .22s ease",
+      }}
+    >
+      {/* IMAGEN */}
+      <div
+        style={{
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <ProductImg product={product} height={220} />
+
+        {/* PREMIUM */}
+        <div
+          style={{
+            position: "absolute",
+            top: 14,
+            left: 14,
+            background: "#fff",
+            color: "#1E5F61",
+            padding: "0.45rem 0.8rem",
+            borderRadius: "999px",
+            fontSize: "0.72rem",
+            fontWeight: 800,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+            zIndex: 5,
+          }}
+        >
+          ✨ Premium
+        </div>
+
+        {/* DEGRADADO */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(to top, rgba(0,0,0,0.15), transparent 45%)",
+            pointerEvents: "none",
+          }}
         />
       </div>
-    )
-  }
-  return (
-    <div style={{ height, background: ph.bg, borderRadius, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3.5rem' }}>
-      {ph.emoji}
-    </div>
-  )
-}
 
-// Tarjeta producto
-function ProductCard({ product, onVerFicha, onAddToCart }) {
-  return (
-    <div style={{
-      background: 'var(--color-surface)', borderRadius: 'var(--radius-lg)',
-      boxShadow: 'var(--shadow-sm)', overflow: 'hidden',
-      display: 'flex', flexDirection: 'column',
-      transition: 'transform 0.2s, box-shadow 0.2s',
-    }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)' }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)' }}
-    >
-      <ProductImg product={product} height={160} />
+      {/* CONTENIDO */}
+      <div
+        style={{
+          padding: "1.2rem",
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            gap: "0.8rem",
+          }}
+        >
+          <div>
+            <span
+              style={{
+                fontSize: "0.72rem",
+                fontWeight: 800,
+                color: "#3D8A8C",
+                textTransform: "uppercase",
+                letterSpacing: ".5px",
+              }}
+            >
+              {product.brand}
+            </span>
 
-      <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-        <span style={{ fontSize: '0.7rem', color: 'var(--color-primary)', fontWeight: 700, textTransform: 'uppercase' }}>
-          {product.brand}
-        </span>
-        <h3 style={{ fontSize: '0.92rem', fontWeight: 700, lineHeight: 1.3, margin: 0 }}>
-          {product.name}
-        </h3>
-        {product.presentation && (
-          <span style={{ fontSize: '0.75rem', color: '#888' }}>📦 {product.presentation}</span>
-        )}
-        <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', flex: 1, margin: 0, lineHeight: 1.4 }}>
-          {product.description?.slice(0, 70)}{product.description?.length > 70 ? '…' : ''}
-        </p>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.5rem' }}>
-          <span style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--color-primary-dark)' }}>
-            ${Number(product.price).toLocaleString('es-CO')}
-          </span>
-          <span style={{
-            fontSize: '0.7rem', padding: '2px 8px', borderRadius: 20, fontWeight: 700,
-            background: product.availability === 'DISPONIBLE' ? '#E8F7F0' : '#FDF0F0',
-            color: product.availability === 'DISPONIBLE' ? '#0F6E56' : '#C0392B',
-          }}>
-            {product.availability === 'DISPONIBLE' ? '✓ Disponible' : 'Agotado'}
+            <h3
+              style={{
+                fontSize: "1rem",
+                fontWeight: 800,
+                lineHeight: 1.3,
+                margin: "0.35rem 0",
+                color: "#1A1A1A",
+              }}
+            >
+              {product.name}
+            </h3>
+          </div>
+
+          <span
+            style={{
+              background: "#E8F7F0",
+              color: "#0F6E56",
+              padding: "4px 10px",
+              borderRadius: "999px",
+              fontSize: "0.68rem",
+              fontWeight: 700,
+              whiteSpace: "nowrap",
+            }}
+          >
+            Disponible
           </span>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.4rem' }}>
+
+        {product.presentation && (
+          <span
+            style={{
+              color: "#6B7280",
+              fontSize: "0.8rem",
+              marginBottom: "0.7rem",
+            }}
+          >
+            📦 {product.presentation}
+          </span>
+        )}
+
+        <p
+          style={{
+            color: "#6B7280",
+            fontSize: "0.85rem",
+            lineHeight: 1.6,
+            marginBottom: "1rem",
+            flex: 1,
+          }}
+        >
+          {product.description?.slice(0, 100)}...
+        </p>
+
+        {ingredients.length > 0 && (
+          <div
+            style={{
+              display: "flex",
+              gap: "0.5rem",
+              flexWrap: "wrap",
+              marginBottom: "1rem",
+            }}
+          >
+            {ingredients.map((ing) => (
+              <div
+                key={ing.label}
+                style={{
+                  background: "#F8F9FA",
+                  borderRadius: "10px",
+                  padding: "0.35rem 0.6rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.35rem",
+                  fontSize: "0.72rem",
+                  fontWeight: 600,
+                }}
+              >
+                <span>{ing.emoji}</span>
+                <span>{ing.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div
+          style={{
+            marginBottom: "1rem",
+          }}
+        >
+          <span
+            style={{
+              fontSize: "1.7rem",
+              fontWeight: 900,
+              color: "#1E5F61",
+            }}
+          >
+            ${Number(product.price).toLocaleString("es-CO")}
+          </span>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "0.7rem",
+          }}
+        >
           <button
-            className="btn btn-primary"
-            style={{ flex: 1, justifyContent: 'center', fontSize: '0.82rem', padding: '0.5rem' }}
             onClick={() => onAddToCart(product)}
-            disabled={product.availability !== 'DISPONIBLE'}
+            style={{
+              flex: 1,
+              border: "none",
+              background: "linear-gradient(135deg, #1E5F61, #3D8A8C)",
+              color: "#fff",
+              borderRadius: "16px",
+              padding: "1rem",
+              fontWeight: 800,
+              cursor: "pointer",
+              fontSize: "0.92rem",
+              boxShadow: "0 8px 18px rgba(30,95,97,0.22)",
+            }}
           >
             🛒 Agregar
           </button>
+
           <button
             onClick={() => onVerFicha(product)}
             style={{
-              padding: '0.5rem 0.75rem', borderRadius: 8,
-              border: '1.5px solid #2A8B8B',
-              background: 'transparent', color: '#2A8B8B',
-              fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer',
+              border: "1px solid #1E5F61",
+              background: "#fff",
+              color: "#1E5F61",
+              borderRadius: "16px",
+              padding: "1rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              fontSize: "0.85rem",
             }}
           >
             Ver ficha
@@ -136,313 +321,149 @@ function ProductCard({ product, onVerFicha, onAddToCart }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-// Modal ficha técnica profesional
-function FichaTecnicaModal({ product, onClose }) {
-  const { addItem } = useCart()
-  if (!product) return null
+export default function ProductsPage() {
+  const [search, setSearch] = useState("");
+  const [selectedCat, setSelectedCat] = useState("");
+  const [fichaOpen, setFichaOpen] = useState(null);
 
-  const ph = CAT_PLACEHOLDER[product.categoryId] || CAT_PLACEHOLDER.default
-  const ingredients = getIngredients(product.description)
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // Agrupar presentaciones del mismo producto (mismo nombre y marca)
-  const variantes = PRODUCTOS_DATA.filter(p =>
-    p.name === product.name && p.brand === product.brand
-  )
+  const { addItem } = useCart();
 
-  const handleAdd = () => {
-    addItem({ id: product.id, name: product.name, price: product.price, image: null })
+  useEffect(() => {
+    const catFromUrl = searchParams.get("cat");
+
+    if (catFromUrl) setSelectedCat(catFromUrl);
+  }, []);
+
+  const handleCatChange = (value) => {
+    setSelectedCat(value);
+
+    if (value) setSearchParams({ cat: value });
+    else setSearchParams({});
+  };
+
+  const filtered = PRODUCTOS_DATA.filter((p) => {
+    const matchSearch =
+      !search ||
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.brand.toLowerCase().includes(search.toLowerCase()) ||
+      p.description.toLowerCase().includes(search.toLowerCase());
+
+    const matchCat = !selectedCat || p.categoryId === selectedCat;
+
+    return matchSearch && matchCat;
+  });
+
+  const handleAddToCart = (product) => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: null,
+    });
+
     Swal.fire({
-      toast: true, position: 'top-end', icon: 'success',
+      toast: true,
+      position: "top-end",
+      icon: "success",
       title: `${product.name} agregado al carrito`,
-      showConfirmButton: false, timer: 1500,
-    })
-    onClose()
-  }
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  };
 
   return (
     <div
-      onClick={onClose}
       style={{
-        position: 'fixed', inset: 0, zIndex: 1000,
-        background: 'rgba(0,0,0,0.6)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '1rem', animation: 'fadeInBg .2s ease',
+        background: "#F4F7F8",
+        minHeight: "100vh",
+        padding: "2rem",
       }}
     >
+      {/* FILTROS */}
       <div
-        onClick={e => e.stopPropagation()}
         style={{
-          background: '#fff', borderRadius: 20,
-          width: '100%', maxWidth: 600,
-          maxHeight: '92vh', overflowY: 'auto',
-          boxShadow: '0 32px 80px rgba(0,0,0,0.28)',
-          animation: 'slideUp .22s ease',
+          background: "#fff",
+          borderRadius: "28px",
+          padding: "1rem",
+          marginBottom: "2rem",
+          display: "flex",
+          gap: "1rem",
+          boxShadow: "0 8px 22px rgba(0,0,0,0.04)",
         }}
       >
-        {/* ── CABECERA con imagen ── */}
-        <div style={{
-          display: 'grid', gridTemplateColumns: '200px 1fr',
-          borderRadius: '20px 20px 0 0', overflow: 'hidden',
-          background: ph.bg, minHeight: 200,
-          position: 'relative',
-        }}>
-          {/* Imagen */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-            <ProductImg product={product} height={170} borderRadius={12} />
-          </div>
-
-          {/* Info principal */}
-          <div style={{ padding: '1.5rem 1.5rem 1.5rem 0.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '0.4rem' }}>
-            <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#2A8B8B', textTransform: 'uppercase', letterSpacing: '.8px' }}>
-              {product.category}
-            </span>
-            <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 900, color: '#1a1a1a', lineHeight: 1.2 }}>
-              {product.name}
-            </h2>
-            {product.subtitle && (
-              <p style={{ margin: 0, fontSize: '0.82rem', fontWeight: 700, color: '#E8A020', textTransform: 'uppercase', letterSpacing: '.5px' }}>
-                {product.subtitle}
-              </p>
-            )}
-            <p style={{ margin: 0, fontSize: '0.88rem', color: '#555', fontWeight: 600 }}>
-              {product.brand}
-            </p>
-            {product.species && (
-              <span style={{
-                display: 'inline-block', padding: '3px 12px', borderRadius: 20,
-                background: 'rgba(42,139,139,0.15)', color: '#1E6666',
-                fontSize: '0.75rem', fontWeight: 700, alignSelf: 'flex-start',
-              }}>
-                {product.species === 'Perros' ? '🐶' : product.species === 'Gatos' ? '🐱' : '🐾'} {product.species}
-              </span>
-            )}
-          </div>
-
-          {/* Botón cerrar */}
-          <button onClick={onClose} style={{
-            position: 'absolute', top: 12, right: 12,
-            width: 32, height: 32, borderRadius: '50%',
-            border: 'none', background: 'rgba(0,0,0,0.15)',
-            cursor: 'pointer', fontSize: '1rem', color: '#333',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontWeight: 700,
-          }}>✕</button>
-        </div>
-
-        {/* ── CUERPO ── */}
-        <div style={{ padding: '1.5rem' }}>
-
-          {/* Ingredientes / emojis */}
-          {ingredients.length > 0 && (
-            <div style={{ marginBottom: '1.25rem' }}>
-              <p style={{ fontSize: '0.75rem', fontWeight: 700, color: '#888', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: '0.6rem' }}>
-                Ingredientes principales
-              </p>
-              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                {ingredients.map(ing => (
-                  <div key={ing.label} style={{
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem',
-                    background: '#F8F9FA', borderRadius: 10, padding: '0.5rem 0.75rem',
-                    minWidth: 56,
-                  }}>
-                    <span style={{ fontSize: '1.5rem' }}>{ing.emoji}</span>
-                    <span style={{ fontSize: '0.65rem', color: '#666', fontWeight: 600 }}>{ing.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Tabla de presentaciones */}
-          {variantes.length > 1 && (
-            <div style={{ marginBottom: '1.25rem' }}>
-              <p style={{ fontSize: '0.75rem', fontWeight: 700, color: '#888', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: '0.6rem' }}>
-                Presentaciones disponibles
-              </p>
-              <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid #E8E8E8' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                  <thead>
-                    <tr style={{ background: '#2A8B8B' }}>
-                      <th style={{ padding: '8px 14px', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: '#fff' }}>Código</th>
-                      <th style={{ padding: '8px 14px', textAlign: 'left', fontSize: '0.75rem', fontWeight: 700, color: '#fff' }}>Presentación</th>
-                      <th style={{ padding: '8px 14px', textAlign: 'right', fontSize: '0.75rem', fontWeight: 700, color: '#fff' }}>Precio</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {variantes.map((v, i) => (
-                      <tr key={v.id} style={{ background: i % 2 === 0 ? '#fff' : '#F8F9FA' }}>
-                        <td style={{ padding: '8px 14px', fontSize: '0.82rem', color: '#555' }}>{v.code}</td>
-                        <td style={{ padding: '8px 14px', fontSize: '0.82rem', fontWeight: 600 }}>{v.presentation}</td>
-                        <td style={{ padding: '8px 14px', fontSize: '0.85rem', fontWeight: 800, color: '#1E6666', textAlign: 'right' }}>
-                          ${Number(v.price).toLocaleString('es-CO')}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* Ficha técnica */}
-          <div style={{ background: '#F8F9FA', borderRadius: 12, padding: '1rem', marginBottom: '1.25rem' }}>
-            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: '#888', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: '0.6rem' }}>
-              📋 Ficha técnica
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
-              {[
-                product.code         && ['Código',        product.code],
-                product.presentation && ['Presentación',  product.presentation],
-                product.type         && ['Tipo',          product.type],
-                product.target       && ['Dirigido a',    product.target],
-                ['Stock',             `${product.stock} unidades`],
-              ].filter(Boolean).map(([label, value]) => (
-                <div key={label} style={{ display: 'flex', gap: '1rem', fontSize: '0.85rem' }}>
-                  <span style={{ color: '#888', minWidth: 110, flexShrink: 0 }}>{label}</span>
-                  <span style={{ fontWeight: 600, color: '#222' }}>{value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Descripción */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <p style={{ fontSize: '0.75rem', fontWeight: 700, color: '#888', textTransform: 'uppercase', letterSpacing: '.5px', marginBottom: '0.5rem' }}>
-              📝 Descripción
-            </p>
-            <p style={{ fontSize: '0.9rem', color: '#444', lineHeight: 1.75, margin: 0 }}>
-              {product.description}
-            </p>
-          </div>
-
-          {/* Precio + botón */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '1rem',
-            background: '#F0F9F9', borderRadius: 12, padding: '1rem 1.25rem',
-          }}>
-            <div>
-              <p style={{ margin: 0, fontSize: '0.75rem', color: '#888', fontWeight: 600 }}>Precio</p>
-              <p style={{ margin: 0, fontSize: '1.8rem', fontWeight: 900, color: '#1E6666', lineHeight: 1 }}>
-                ${Number(product.price).toLocaleString('es-CO')}
-              </p>
-            </div>
-            <button
-              className="btn btn-primary"
-              style={{ flex: 1, justifyContent: 'center', padding: '0.85rem', fontSize: '1rem' }}
-              onClick={handleAdd}
-              disabled={product.availability !== 'DISPONIBLE'}
-            >
-              🛒 Agregar al carrito
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <style>{`
-        @keyframes fadeInBg { from { opacity:0 } to { opacity:1 } }
-        @keyframes slideUp  { from { transform:translateY(24px); opacity:0 } to { transform:translateY(0); opacity:1 } }
-      `}</style>
-    </div>
-  )
-}
-
-// ── Página principal ──────────────────────────────────────
-export default function ProductsPage() {
-  const [search,       setSearch]      = useState('')
-  const [selectedCat,  setSelectedCat] = useState('')
-  const [fichaOpen,    setFichaOpen]   = useState(null)
-  const [searchParams, setSearchParams] = useSearchParams()
-  const { addItem } = useCart()
-
-  useEffect(() => {
-    const catFromUrl = searchParams.get('cat')
-    if (catFromUrl) setSelectedCat(catFromUrl)
-  }, [])
-
-  const handleCatChange = (value) => {
-    setSelectedCat(value)
-    if (value) setSearchParams({ cat: value })
-    else setSearchParams({})
-  }
-
-  const filtered = PRODUCTOS_DATA.filter(p => {
-    const matchSearch = !search ||
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.brand.toLowerCase().includes(search.toLowerCase()) ||
-      p.description.toLowerCase().includes(search.toLowerCase())
-    const matchCat = !selectedCat || p.categoryId === selectedCat
-    return matchSearch && matchCat
-  })
-
-  const handleAddToCart = (product) => {
-    addItem({ id: product.id, name: product.name, price: product.price, image: null })
-    Swal.fire({
-      toast: true, position: 'top-end', icon: 'success',
-      title: `${product.name} agregado al carrito`,
-      showConfirmButton: false, timer: 1500,
-    })
-  }
-
-  return (
-    <div className="container" style={{ padding: '2rem 1rem' }}>
-      <h1 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '0.25rem' }}>🛍️ Productos</h1>
-      <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem' }}>
-        Encuentra todo lo que tu mascota necesita
-      </p>
-
-      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
         <input
-          type="text" className="form-control"
-          placeholder="🔍 Buscar por nombre, marca o descripción…"
-          value={search} onChange={e => setSearch(e.target.value)}
-          style={{ maxWidth: 320 }}
+          type="text"
+          placeholder="🔍 Buscar productos..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{
+            flex: 1,
+            border: "1px solid #E5E7EB",
+            borderRadius: "16px",
+            padding: "1rem",
+            fontSize: "1rem",
+          }}
         />
+
         <select
-          className="form-control" value={selectedCat}
-          onChange={e => handleCatChange(e.target.value)}
-          style={{ maxWidth: 220 }}
+          value={selectedCat}
+          onChange={(e) => handleCatChange(e.target.value)}
+          style={{
+            minWidth: 260,
+            border: "2px solid #D4883B",
+            borderRadius: "16px",
+            padding: "1rem",
+            fontSize: "1rem",
+            fontWeight: 600,
+          }}
         >
           <option value="">Todas las categorías</option>
-          {CATEGORIES.map(c => (
-            <option key={c.id} value={c.id}>{c.name}</option>
+
+          {CATEGORIES.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
           ))}
         </select>
-        {(search || selectedCat) && (
-          <button className="btn btn-outline" onClick={() => { setSearch(''); handleCatChange('') }}
-            style={{ fontSize: '0.85rem' }}>
-            ✕ Limpiar
-          </button>
-        )}
       </div>
 
-      <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
-        {filtered.length} producto{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
-      </p>
-
-      {filtered.length === 0 ? (
-        <div style={{ textAlign: 'center', marginTop: '3rem', color: 'var(--color-text-muted)' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔍</div>
-          <p>No se encontraron productos.</p>
-        </div>
-      ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '1.5rem' }}>
-          {filtered.map(product => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onVerFicha={setFichaOpen}
-              onAddToCart={handleAddToCart}
-            />
-          ))}
-        </div>
-      )}
+      {/* GRID */}
+      <div
+        key={selectedCat}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+          gap: "2rem",
+        }}
+      >
+        {filtered.map((product) => (
+          <ProductCard
+            key={`${product.id}-${product.name}-${product.categoryId}`}
+            product={product}
+            onVerFicha={setFichaOpen}
+            onAddToCart={handleAddToCart}
+          />
+        ))}
+      </div>
 
       {fichaOpen && (
-        <FichaTecnicaModal product={fichaOpen} onClose={() => setFichaOpen(null)} />
+        <FichaTecnicaModal
+          product={fichaOpen}
+          onClose={() => setFichaOpen(null)}
+        />
       )}
+
+      <style>{`
+        .product-card:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 18px 42px rgba(0,0,0,0.12);
+        }
+      `}</style>
     </div>
-  )
+  );
 }
