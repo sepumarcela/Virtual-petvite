@@ -5,7 +5,7 @@ import { AuthProvider }      from './context/AuthContext'
 import { CartProvider }      from './context/CartContext'
 import { AdminAuthProvider } from './context/AdminAuthContext'
 import { router } from './router'
-import './index.css'
+import './styles/index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

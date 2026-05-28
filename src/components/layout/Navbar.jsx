@@ -1,9 +1,7 @@
-
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 
-const TEAL      = '#F5F5F5'
 const DARK_TEAL = '#1E5F61'
 const ORANGE    = '#D4883B'
 
@@ -12,6 +10,7 @@ const FacebookIcon = () => (
     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
   </svg>
 )
+
 const InstagramIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
@@ -25,113 +24,266 @@ export default function Navbar() {
   const { isAuthenticated, user } = useAuth()
 
   return (
-    <header>
-     
+    <header style={{
+      position: 'sticky',
+      top: 0,
+      zIndex: 999,
+    }}>
+
+      {/* TOP BAR */}
       <div style={{
-        background: DARK_TEAL, color: '#fff',
-        fontSize: '0.78rem', padding: '0.45rem 2rem',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        flexWrap: 'wrap', gap: '0.5rem',
+        background: DARK_TEAL,
+        color: '#fff',
+        fontSize: '0.78rem',
+        padding: '0.5rem 2rem',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: '0.5rem',
       }}>
-        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{
+          display: 'flex',
+          gap: '1.5rem',
+          alignItems: 'center',
+          flexWrap: 'wrap'
+        }}>
           <span>📞 310 385 2168</span>
           <span>🛡️ Compras seguras online</span>
           <span>💳 Pago contra entrega</span>
           <span>🚚 Entregas el mismo día</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <span style={{ opacity: 0.85 }}>Síguenos en redes</span>
-          <a href="https://facebook.com" target="_blank" rel="noreferrer"
-            style={{ display: 'flex', alignItems: 'center' }}><FacebookIcon /></a>
-          <a href="https://instagram.com" target="_blank" rel="noreferrer"
-            style={{ display: 'flex', alignItems: 'center' }}><InstagramIcon /></a>
+
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.6rem'
+        }}>
+          <span style={{ opacity: 0.85 }}>
+            Síguenos en redes
+          </span>
+
+          <a
+            href="https://facebook.com"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <FacebookIcon />
+          </a>
+
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <InstagramIcon />
+          </a>
         </div>
       </div>
 
-  
-      <nav style={{
-        background: TEAL,
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        padding: '0.5rem 2rem',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+      {/* NAVBAR */}
+    <nav style={{
+  background: 'rgba(255,255,255,0.96)',
+  backdropFilter: 'blur(12px)',
+  borderBottom: '1px solid rgba(0,0,0,0.05)',
+  boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
+}}>
+
+  <div style={{
+    maxWidth: '1450px',
+    margin: '0 auto',
+    padding: '1rem 2rem',
+    display: 'grid',
+    gridTemplateColumns: '260px 1fr auto',
+    alignItems: 'center',
+    gap: '2rem',
+  }}>
+
+    {/* LOGO */}
+    <Link
+      to="/"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '1rem',
+        textDecoration: 'none',
+      }}
+    >
+      <img
+        src="/logo.png"
+        alt="VirtualPet"
+        style={{
+          width: 82,
+          height: 82,
+          objectFit: 'contain',
+        }}
+      />
+
+      <div>
+        <div style={{
+          fontSize: '2rem',
+          fontWeight: 900,
+          color: DARK_TEAL,
+          lineHeight: 1,
+        }}>
+          VirtualPet
+        </div>
+
+        <div style={{
+          fontSize: '0.82rem',
+          color: '#6B7280',
+          marginTop: '0.3rem',
+          fontWeight: 600,
+        }}>
+          Todo para tu mascota 🐾
+        </div>
+      </div>
+    </Link>
+
+    {/* BUSCADOR */}
+    <div style={{
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+    }}>
+      <div style={{
+        width: '100%',
+        maxWidth: '700px',
+        background: '#F3F4F6',
+        borderRadius: '16px',
+        padding: '0.9rem 1.2rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.8rem',
+        border: '1px solid rgba(0,0,0,0.05)',
       }}>
-        {/* Logo imagen */}
-        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-          <img
-            src="/logo.png"
-            alt="VirtualPet"
-            style={{
-              height: 52,
-              objectFit: 'contain',
-            }}
-          />
-        </Link>
+        <span style={{
+          fontSize: '1.2rem',
+          opacity: 0.7,
+        }}>
+          🔍
+        </span>
 
-        <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
+        <input
+          type="text"
+          placeholder="Buscar productos para tu mascota..."
+          style={{
+            border: 'none',
+            outline: 'none',
+            background: 'transparent',
+            width: '100%',
+            fontSize: '0.95rem',
+            color: '#1A1A1A',
+          }}
+        />
+      </div>
+    </div>
 
-          
-          <NavBtn to="/" label="🏠" title="Inicio" />
+    {/* BOTONES */}
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.7rem',
+    }}>
 
-          
-          <NavBtn to="/products" label="🛍️" title="Productos" />
+      <NavBtn to="/" label="🏠" title="Inicio" />
 
-          
-          <Link to="/cart" title="Carrito" style={{ textDecoration: 'none' }}>
-            <div style={{
-              ...btnBase,
-              display: 'flex', alignItems: 'center', gap: '0.3rem',
+      <NavBtn to="/products" label="🛍️" title="Productos" />
+
+      {/* CARRITO */}
+      <Link
+        to="/cart"
+        title="Carrito"
+        style={{ textDecoration: 'none' }}
+      >
+        <div style={{
+          ...btnBase,
+          position: 'relative',
+        }}>
+          🛒
+
+          {totalItems > 0 && (
+            <span style={{
+              position: 'absolute',
+              top: -5,
+              right: -5,
+              background: ORANGE,
+              color: '#fff',
+              width: 20,
+              height: 20,
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '0.7rem',
+              fontWeight: 800,
             }}>
-              <span style={{ fontSize: '1.3rem' }}>🛒</span>
-              {totalItems > 0 && (
-                <span style={{
-                  background: ORANGE, color: '#fff',
-                  borderRadius: '50%', width: 20, height: 20,
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '0.68rem', fontWeight: 800,
-                }}>
-                  {totalItems}
-                </span>
-              )}
-            </div>
-          </Link>
-
-          
-          {(!isAuthenticated || user?.role === 'admin') && (
-            <Link
-              to={isAuthenticated && user?.role === 'admin' ? '/dashboard' : '/login'}
-              title={isAuthenticated ? 'Panel Admin' : 'Administrador'}
-              style={{ textDecoration: 'none' }}
-            >
-              <div style={{
-                ...btnBase,
-                background: 'rgba(255,255,255,0.15)',
-                borderRadius: 8,
-                padding: '0.35rem 0.75rem',
-                fontSize: '1.2rem',
-              }}>
-                🔐
-              </div>
-            </Link>
+              {totalItems}
+            </span>
           )}
         </div>
-      </nav>
+      </Link>
+
+      {/* ADMIN */}
+      {(!isAuthenticated || user?.role === 'admin') && (
+        <Link
+          to={
+            isAuthenticated && user?.role === 'admin'
+              ? '/dashboard'
+              : '/login'
+          }
+          style={{ textDecoration: 'none' }}
+        >
+          <div style={{
+            ...btnBase,
+            background: ORANGE,
+            color: '#fff',
+          }}>
+            🔐
+          </div>
+        </Link>
+      )}
+    </div>
+  </div>
+</nav>
+     
     </header>
   )
 }
 
 function NavBtn({ to, label, title }) {
   return (
-    <Link to={to} title={title} style={{ textDecoration: 'none' }}>
-      <div style={btnBase}>{label}</div>
+    <Link
+      to={to}
+      title={title}
+      style={{ textDecoration: 'none' }}
+    >
+      <div style={btnBase}>
+        {label}
+      </div>
     </Link>
   )
 }
 
 const btnBase = {
-  fontSize: '1.3rem',
-  padding: '0.35rem 0.6rem',
-  borderRadius: 8,
+  width: 50,
+  height: 50,
+  borderRadius: 14,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: '#F3F4F6',
+  color: DARK_TEAL,
+  fontSize: '1.25rem',
+  border: '1px solid rgba(0,0,0,0.05)',
+  transition: 'all 0.2s ease',
   cursor: 'pointer',
-  transition: 'background 0.15s',
-  color: '#fff',
 }
