@@ -25,11 +25,11 @@ CREATE DATABASE virtualpet_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 Copia `.env` (ya incluido) y edita los valores:
 
 ```env
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=virtualpet_db
-DB_USERNAME=root
-DB_PASSWORD=tu_password
+# Base de datos · Neon PostgreSQL
+# 👉 Copia estos datos desde: neon.tech → tu proyecto → Connection Details → JDBC
+DB_URL=jdbc:postgresql://ep-still-sun-amfbmozx-pooler.c-5.us-east-1.aws.neon.tech/neondb
+DB_USERNAME=neondb_owner
+DB_PASSWORD=npg_2MqSdTfA8cme
 
 JWT_SECRET=un_secreto_largo_y_seguro_de_al_menos_64_caracteres
 JWT_EXPIRATION_MS=86400000
