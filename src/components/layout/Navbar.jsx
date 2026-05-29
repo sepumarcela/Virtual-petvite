@@ -232,25 +232,20 @@ export default function Navbar() {
         </div>
       </Link>
 
-      {/* ADMIN */}
-      {(!isAuthenticated || user?.role === 'admin') && (
-        <Link
-          to={
-            isAuthenticated && user?.role === 'admin'
-              ? '/dashboard'
-              : '/login'
-          }
-          style={{ textDecoration: 'none' }}
-        >
-          <div style={{
-            ...btnBase,
-            background: ORANGE,
-            color: '#fff',
-          }}>
-            🔐
-          </div>
-        </Link>
-      )}
+      {/* ADMIN — siempre visible, siempre va a /admin/login */}
+      <Link
+        to="/admin/login"
+        title="Panel Administrativo"
+        style={{ textDecoration: 'none' }}
+      >
+        <div style={{
+          ...btnBase,
+          background: ORANGE,
+          color: '#fff',
+        }}>
+          🔐
+        </div>
+      </Link>
     </div>
   </div>
 </nav>
